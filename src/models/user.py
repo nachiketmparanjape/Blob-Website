@@ -1,6 +1,6 @@
 from src.common.database import Database
 
-class user(object):
+class User(object):
     """ Let user log in, register and stuff like that"""
 
     def __init__(self,email,password, _id=None):
@@ -21,21 +21,45 @@ class user(object):
             return cls(**data)
         return None #default return
 
-    def login_valid(self,email):
+    @staticmethod
+    def login_valid(email,password):
         #Check whether user's email matches the password they sent us
         user = User.get_by_email(email)
+        if user is not None:
+            #Check the password
+            return user['password'] == password
+        return False
 
-    def register(self):
-        pass
+    @classmethod
+    def register(cls,  email,password):
+        user = cls.get_by_email(email)
+        if user is None:
+            new_user = cls(email,password)
+            new_user.save_to_mongo()
+            session['email'] = email
+            return True
+        else:
+            return False
 
-    def login(self):
-        pass
+    @staticmethod
+    def login(self,user_email,user_password):
+        #login valid has already been called
+        session['email'] = user_email
+
+    @staticmethod
+    def logout():
+        session['email'] = None
+
 
     def get_blogs(self):
-        pass
+
 
     def json(self):
-        pass
+        return {
+            "email" : self.email,
+            "_id" : self._id,
+            "password" : self.password
+        }
 
     def save_to_mongo(self):
-        pass
+        Database.insert("users",self.json())

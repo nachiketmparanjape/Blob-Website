@@ -7,8 +7,9 @@ from src.models.post import Post
 
 
 class Blog(object):
-    def __init__(self, author, title, description, _id=None):
+    def __init__(self, author, title, description, aurhor_id, _id=None):
         self.author = author
+        self.author_id =
         self.title = title
         self.description = description
         self._id = uuid.uuid4().hex if _id is None else _id
