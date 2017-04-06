@@ -1,4 +1,10 @@
+import uuid
+
+from flask import session
+
 from src.common.database import Database
+from src.models.blog import Blog
+
 
 class User(object):
     """ Let user log in, register and stuff like that"""
@@ -52,6 +58,25 @@ class User(object):
 
 
     def get_blogs(self):
+        return Blog.find_by_author_id(self._id)
+
+    def new_blog(self, title, description):
+        # author, title, description, author_id
+        blog = Blog(author = self.email,
+                    title = title,
+                    description=description,
+                    author_id=self._id)
+
+        blog.save_to_mongo()
+
+    @staticmethod
+    def new_post(blog_id, title, content, date=datetime.datetime.utcnow()):
+        # title, content, date=datetime.dateime.utcnow()
+        blog = Blog.from_mongo(blog_id)
+        blog.new_post(title=title,
+                      content=content,
+                      date=date)
+
 
 
     def json(self):
