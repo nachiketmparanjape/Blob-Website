@@ -1,13 +1,12 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__) # '__main__'
 
 @app.route('/')
 def hello_method():
     #return ("Hello, world!")
-    i = input("Type Something - ")
-    return(i)
+    return render_template('login.html')
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run()
 
